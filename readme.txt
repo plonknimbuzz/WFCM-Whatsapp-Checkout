@@ -49,10 +49,6 @@ Pls note that this is my custom plugin to suit my needs. You may also adjust it 
 2. Log into WordPress admin and activate the 'Loco Translate' plugin through the 'Plugins' menu
 3. Go to *Loco Translate > Home* in the left-hand menu to start translating
 
-
-More information on using the plugin is [available here](https://localise.biz/wordpress/plugin).
-
-
 = Is my data protected? =
 
 We don't collect your data or snoop on you. Feel free to see the codes.

@@ -42,7 +42,8 @@ add_filter( 'woocommerce_thankyou_order_received_text', 'wfcm_wa_thankyou', 10, 
 function wfcm_wa_thankyou($title, $order) {
 	$wa='';
 	$items = "";
-	$mode = ($order->get_billing_address_1() != $order->get_shipping_address_1() || $order->get_billing_first_name() != $order->get_shipping_first_name())?'shipping':'billing';
+	//$mode = ($order->get_billing_address_1() != $order->get_shipping_address_1() || $order->get_billing_first_name() != $order->get_shipping_first_name())?'shipping':'billing';
+	$mode = 'shipping'; //force shipping mode
 	$country =  WC()->countries->countries[ $order->{"get_".$mode."_country"}() ];
 	$states = WC()->countries->get_states( $order->{"get_".$mode."_country"}() );
 	$province =  $states[ $order->{"get_".$mode."_state"}() ];

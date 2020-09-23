@@ -49,7 +49,7 @@ function wfcm_wa_thankyou($title, $order) {//print_r($order);exit;
 	$shipping_method_title = $order->get_shipping_method();
 	if(empty($shipping_method_title)){
 		foreach( $order->get_items( 'shipping' ) as $item_id => $shipping_item_obj ){print_r($shipping_item_obj);
-			$shipping_method_title       = $shipping_item_obj->get_method_title();
+			$shipping_method_title = $shipping_item_obj->get_method_title();
 			break;
 		}
 	}
@@ -58,6 +58,7 @@ function wfcm_wa_thankyou($title, $order) {//print_r($order);exit;
 		$vendor_id = $item->get_meta('_vendor_id');
 		$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
 		$whatsapp = get_user_meta( $vendor_id, 'whatsapp-number', true );
+		$vendor_name =  get_user_meta( $vendor_id, 'store_name', true );
 		if(!empty($whatsapp)){
 			$wa=$whatsapp;
 		}
@@ -95,7 +96,7 @@ function wfcm_wa_thankyou($title, $order) {//print_r($order);exit;
 	$msg .="\n";
 	$msg .="Thank you!\n\n";
 	$msg .= "(Server time : ".date_i18n("j-F-Y - H:i",strtotime($order->get_date_created()->format('Y-m-d H:i:s'))).")";
-	$btn_text ='Send Order by WA';
+	$btn_text ="Send Order by WA to: ".$vendor_name;
 	$html =  '<div class="thankyoucustom_wrapper">
             <h1 class="thankyoutitle">'.$judul.'</h1>
             <p class="subtitle">'.$subtitle.'</p>

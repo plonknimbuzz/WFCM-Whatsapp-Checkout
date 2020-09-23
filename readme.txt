@@ -1,6 +1,6 @@
 === WFCM Whatsapp Checkout ===
 Contributors: aditbaco, plonknimbuzz
-Plugin URL : https://github.com/aditbaco/WA-Checkout-WCFM-Woocommerce
+Plugin URL : https://github.com/aditbaco/WFCM-Whatsapp-Checkout
 Tags: checkout whatsapp, order by wa, multi vendor, woocommerce, wcfm
 Requires at least Woocommerce : 4.1
 Requires at least WCFM Front End Manager : 6.4
@@ -45,13 +45,9 @@ Pls note that this is my custom plugin to suit my needs. You may also adjust it 
 
 = Installing manually: =
 
-1. Unzip all files to the `wp-content/plugins/loco-translate` directory
-2. Log into WordPress admin and activate the 'Loco Translate' plugin through the 'Plugins' menu
-3. Go to *Loco Translate > Home* in the left-hand menu to start translating
-
-
-More information on using the plugin is [available here](https://localise.biz/wordpress/plugin).
-
+1. Unzip all files to the `wp-content/plugins/wcfm-whatsapp-checkout` directory
+2. Log into WordPress admin and activate the 'WCFM Whatsapp Checkout' plugin through the 'Plugins' menu
+3. Enjoy your new checkout!
 
 = Is my data protected? =
 
@@ -62,5 +58,3 @@ We don't collect your data or snoop on you. Feel free to see the codes.
 
 = 1.0.0 =
 * First release
-
-

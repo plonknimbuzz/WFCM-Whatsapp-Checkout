@@ -59,7 +59,7 @@ function wfcm_wa_thankyou($title, $order) {
 		$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
 		$whatsapp = get_user_meta( $vendor_id, 'whatsapp-number', true );
 		$vendor_name =  get_user_meta( $vendor_id, 'store_name', true );
-		if(!empty($whatsapp) && !in_array($whatsapps)){
+		if(!empty($whatsapp) && !in_array($whatsapp, $whatsapps)){
 			$wa=$whatsapp;
 			$whatsapps[] = $whatsapp;
 			$items .= $item->get_quantity()."x - *".$item->get_name()."*\n";

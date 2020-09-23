@@ -48,6 +48,7 @@ Pls note that this is my custom plugin to suit my needs. You may also adjust it 
 1. Unzip all files to the `wp-content/plugins/wcfm-whatsapp-checkout` directory
 2. Log into WordPress admin and activate the 'WCFM Whatsapp Checkout' plugin through the 'Plugins' menu
 3. Enjoy your new checkout!
+=======
 
 = Is my data protected? =
 
@@ -55,6 +56,8 @@ We don't collect your data or snoop on you. Feel free to see the codes.
 
 
 == Changelog ==
+= 1.0.1 =
+* Added vendor's name to WA button
 
 = 1.0.0 =
 * First release

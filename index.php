@@ -39,10 +39,10 @@ function cus_after_wcfmmp_sold_by_info_product_page( $vendor_id ) {
 add_action( 'woocommerce_before_thankyou', 'wfcm_add_assets_wa_checkout' );
 add_filter( 'woocommerce_thankyou_order_received_text', 'wfcm_wa_thankyou', 10, 2 );
 
-function wfcm_wa_thankyou($title, $order) {//print_r($order);exit;
+function wfcm_wa_thankyou($title, $order) {
 	$wa='';
 	$items = "";
-	$mode = !empty($order->get_shipping_first_name)?'shipping':'billing';
+	$mode = ($order->get_billing_address_1() != $order->get_shipping_address_1() || $order->get_billing_first_name() != $order->get_shipping_first_name())?'shipping':'billing';
 	$country =  WC()->countries->countries[ $order->{"get_".$mode."_country"}() ];
 	$states = WC()->countries->get_states( $order->{"get_".$mode."_country"}() );
 	$province =  $states[ $order->{"get_".$mode."_state"}() ];
@@ -53,60 +53,59 @@ function wfcm_wa_thankyou($title, $order) {//print_r($order);exit;
 			break;
 		}
 	}
-	//var_dump( $shipping_method_title);exit;
+	
 	foreach($order->get_items() as $item){
 		$vendor_id = $item->get_meta('_vendor_id');
 		$vendor_data = get_user_meta( $vendor_id, 'wcfmmp_profile_settings', true );
 		$whatsapp = get_user_meta( $vendor_id, 'whatsapp-number', true );
 		$vendor_name =  get_user_meta( $vendor_id, 'store_name', true );
-		if(!empty($whatsapp)){
+		if(!empty($whatsapp) && !in_array($whatsapps)){
 			$wa=$whatsapp;
+			$whatsapps[] = $whatsapp;
+			$items .= $item->get_quantity()."x - *".$item->get_name()."*\n";
+		    $items .= "Tautan: ".get_permalink( $item->get_product_id() ) ."\n";
+		    $judul = 'Terima kasih sudah berbelanja di FNGTMart - Aksi Nyata Peduli Alumni';
+        	$subtitle = 'Selesaikan checkout Anda dengan menekan tombol Order by WA dibawah ini agar pesanan dapat diproses oleh Penjual.';
+        	$msg = "*Hello, here's my order details:*\n";
+        	$msg .= $items."\n";
+        	$msg .="*Order Id*: ".$order->get_id()."\n";
+        	$msg .="*Harga Total*: ".strip_tags(wc_price($order->get_total()))."\n";
+        	$msg .="*Metode Pembayaran*: ".$order->get_payment_method_title()."\n";
+        	$msg .="*Metode Pengiriman*: ".$shipping_method_title."\n\n";
+        	$msg .="*Info Pengiriman*: \n";
+        	$msg .="Nama: ".$order->{"get_".$mode."_first_name"}()." ".$order->{"get_".$mode."_last_name"}()."\n";
+        	$msg .="Alamat: ".implode(', ',[$order->{"get_".$mode."_address_1"}(),$order->{"get_".$mode."_address_2"}()])."\n";
+        	$msg .="Kota: ".$order->{"get_".$mode."_city"}().", ".$province.", ".$country."\n";
+        	$msg .="Kodepos: ".$order->{"get_".$mode."_postcode"}()."\n";
+        	if($mode=='shipping'){
+        		$email = (isset($order->shipping['email']))?$order->shipping['email']:$order->get_billing_email();
+        		$phone = (isset($order->shipping['phone']))?$order->shipping['phone']:$order->get_billing_phone();
+        	}else{
+        		$email = $order->get_billing_email();
+        		$phone = $order->get_billing_phone();
+        	}
+        	$msg .="Email: ".$email."\n";
+        	$msg .="No. Telepon: ".$phone."\n";
+        	$msg .= "Catatan: ".$order->get_customer_note()."\n";
+        	$msg .="\n";
+        	$msg .="Thank you!\n\n";
+        	$msg .= "(Waktu Server: ".date_i18n("j-F-Y - H:i",strtotime($order->get_date_created()->format('Y-m-d H:i:s'))).")";
+        	$btn_text ='Kirim Order by WA ke: '.$vendor_name;
+        	$html .=  '<a id="sendbtn" href="https://api.whatsapp.com/send?phone='.$wa.'&text='.rawurlencode($msg).'" target="_blank" class="wa-order-thankyou">'.$btn_text.'</a><br>';
 		}
-		$items .= $item->get_quantity()."x - *".$item->get_name()."*\n";
-		$items .= "Tautan: ".get_permalink( $item->get_product_id() ) ."\n";
+
 	}
 	
-	if(empty($wa)){
-		return $title;
-	}
-	
-	$judul = 'Thank you for your order.';
-	$subtitle = 'Complete your checkout by pressing the Order by WA button below so that the order can be processed by the Seller.';
-	$msg = "*Hello, here's my order details:*\n";
-	$msg .= $items."\n";
-	$msg .="*Order Id*: ".$order->get_id()."\n";
-	$msg .="*Total Price*: ".strip_tags(wc_price($order->get_total()))."\n";
-	$msg .="*Payment Method*: ".$order->get_payment_method_title()."\n";
-	$msg .="*Shipping Method*: ".$shipping_method_title."\n\n";
-	$msg .="*Shipping Info*: \n";
-	$msg .="Name: ".$order->{"get_".$mode."_first_name"}()." ".$order->{"get_".$mode."_last_name"}()."\n";
-	$msg .="Address: ".implode(', ',[$order->{"get_".$mode."_address_1"}(),$order->{"get_".$mode."_address_2"}()])."\n";
-	$msg .="City: ".$order->{"get_".$mode."_city"}().", ".$province.", ".$country."\n";
-	$msg .="Zipcode: ".$order->{"get_".$mode."_postcode"}()."\n";
-	if($mode=='shipping'){
-		$email = (isset($order->shipping['email']))?$order->shipping['email']:$order->get_billing_email();
-		$phone = (isset($order->shipping['phone']))?$order->shipping['phone']:$order->get_billing_phone();
+	if(!empty($html)){
+	    return '<div class="thankyoucustom_wrapper">
+                    <h1 class="thankyoutitle">'.$judul.'</h1>
+                    <p class="subtitle">'.$subtitle.'</p>'.$html.'</div>';
 	}else{
-		$email = $order->get_billing_email();
-		$phone = $order->get_billing_phone();
+	    return $title;    
 	}
-	$msg .="Email: ".$email."\n";
-	$msg .="Phone Number: ".$phone."\n";
-	$msg .= "Custom Notes: ".$order->get_customer_note()."\n";
-	$msg .="\n";
-	$msg .="Thank you!\n\n";
-	$msg .= "(Server time : ".date_i18n("j-F-Y - H:i",strtotime($order->get_date_created()->format('Y-m-d H:i:s'))).")";
-	$btn_text ="Send Order by WA to: ".$vendor_name;
-	$html =  '<div class="thankyoucustom_wrapper">
-            <h1 class="thankyoutitle">'.$judul.'</h1>
-            <p class="subtitle">'.$subtitle.'</p>
-            <a id="sendbtn" href="https://api.whatsapp.com/send?phone='.$wa.'&text='.rawurlencode($msg).'" target="_blank" class="wa-order-thankyou">'.$btn_text.'</a>
-            </div>';
-	return $html;
 }
 
 function wfcm_add_assets_wa_checkout(){
 	wp_register_style( 'wa_checkout_style',  plugin_dir_url( __FILE__ ) . 'style.css' );
 	wp_enqueue_style( 'wa_checkout_style' );
 }
-
